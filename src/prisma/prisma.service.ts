@@ -6,7 +6,9 @@ import { PrismaClient } from "src/generated/prisma/client";
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
 
     constructor() {
-        const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+        const url = process.env.DATABASE_URL
+        if (!url) throw new Error('DATABASE_URL não carregada (verifique o .env)')
+        const adapter = new PrismaPg({ connectionString: url });
         super({ adapter });
     }
 
