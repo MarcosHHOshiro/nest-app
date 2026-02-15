@@ -27,3 +27,7 @@ POST {{baseUrl}}/questions
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+{
+    "title": "How to use NestJS with Prisma?",
+    "content": "I want to know how to use NestJS with Prisma. Can someone help me?" 
+}
