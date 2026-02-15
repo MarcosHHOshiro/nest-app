@@ -28,6 +28,12 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "How to use NestJS with Prisma?",
+    "title": "Pergunta 2",
     "content": "I want to know how to use NestJS with Prisma. Can someone help me?" 
 }
+
+###
+# @name fetch_recent_questions
+GET {{baseUrl}}/questions?page=2
+Content-Type: application/json
+Authorization: Bearer {{token}}
