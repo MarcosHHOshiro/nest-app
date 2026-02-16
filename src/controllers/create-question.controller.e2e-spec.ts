@@ -1,12 +1,14 @@
 import { AppModule } from "@/app.module";
 import { PrismaService } from "@/prisma/prisma.service";
 import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { Test } from '@nestjs/testing'
 import request from 'supertest';
 
 describe('Create account (e2e)', () => {
     let app: INestApplication;
     let prisma: PrismaService;
+    let jwt: JwtService
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -16,6 +18,7 @@ describe('Create account (e2e)', () => {
         app = moduleRef.createNestApplication();
 
         prisma = moduleRef.get(PrismaService);
+        jwt = moduleRef.get(JwtService);
 
         await app.init();
     });
@@ -24,23 +27,33 @@ describe('Create account (e2e)', () => {
         await app.close();
     });
 
-    test('[POST] /accounts', async () => {
-        const response = await request(app.getHttpServer())
-            .post('/accounts')
-            .send({
+    test('[POST] /questions', async () => {
+        const user = await prisma.user.create({
+            data: {
                 name: 'John Doe',
                 email: 'john@example.com',
-                password: 'password123',
+                password: 'password123'
+            }
+        });
+
+        const acessToken = jwt.sign({ sub: user.id });
+
+        const response = await request(app.getHttpServer())
+            .post('/questions')
+            .set('Authorization', `Bearer ${acessToken}`)
+            .send({
+                title: 'New question',
+                content: 'This is a new question',
             })
 
         expect(response.status).toBe(201);
 
-        const userOnDatabase = await prisma.user.findUnique({
+        const questionOnDatabase = await prisma.question.findFirst({
             where: {
-                email: 'john@example.com',
+                title: 'New question',
             }
         });
 
-        expect(userOnDatabase).toBeTruthy();
+        expect(questionOnDatabase).toBeTruthy();
     });
 });
