@@ -5,14 +5,17 @@ import { Question as PrismaQuestion } from "@prisma/client";
 
 export class PrismaQuestionMapper {
     static toDomain(raw: PrismaQuestion): Question {
-        return Question.create({
-            content: raw.content,
-            title: raw.title,
-            authorId: new UniqueEntityID(raw.authorId),
-            bestAnswerId: undefined,
-            slug: Slug.create(raw.slug),
-            createdAt: raw.createdAt,
-            updatedAt: raw.updatedAt,
-        }, new UniqueEntityID(raw.id));
+        return Question.create(
+            {
+                title: raw.title,
+                content: raw.content,
+                authorId: new UniqueEntityID(raw.authorId),
+                bestAnswerId: raw.bestAnswerId ? new UniqueEntityID(raw.bestAnswerId) : null,
+                slug: Slug.create(raw.slug),
+                createdAt: raw.createdAt,
+                updatedAt: raw.updatedAt,
+            },
+            new UniqueEntityID(raw.id)
+        );
     }
 }
