@@ -50,24 +50,24 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     }
 
     async save(question: Question): Promise<void> {
-        const raw = PrismaQuestionMapper.toPrisma(question);
+        const data = PrismaQuestionMapper.toPrisma(question);
 
         await this.prisma.question.update({
             where: {
-                id: raw.id,
+                id: data.id,
             },
-            data: raw,
+            data,
         });
     }
 
     async create(question: Question): Promise<void> {
-        const raw = PrismaQuestionMapper.toPrisma(question);
+        const data = PrismaQuestionMapper.toPrisma(question);
 
         await this.prisma.question.create({
-            data: raw,
-        });
+            data,
+        })
     }
-    
+
     async delete(question: Question): Promise<void> {
         const raw = PrismaQuestionMapper.toPrisma(question);
 
